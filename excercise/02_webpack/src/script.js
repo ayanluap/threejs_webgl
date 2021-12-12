@@ -1,28 +1,27 @@
-// Creating a scene
+import './style.css'
+import * as THREE from 'three'
+
+// scene
 const scene = new THREE.Scene()
 
-// MESH: combination of shapes/geometry & MATREIAL: how our mesh look like info goes here
-//(we're creating a red cube)
+// geomertry and material
 const geometry = new THREE.BoxGeometry(1, 1, 1)
 const material = new THREE.MeshBasicMaterial({ color: 0xff0000 })
 
-// making a mesh using geometry and material
+// creating mesh
 const mesh = new THREE.Mesh(geometry, material)
 scene.add(mesh)
 
-// Size
-const size = { height: 600, width: 800 }
+const size = { width: 800, height: 600 }
 
-// Camera for POV (it takes parameters) we pass vert. vision angle in degrees & aspect ratio
+// camera
 const camera = new THREE.PerspectiveCamera(75, size.width / size.height)
 scene.add(camera)
 camera.position.z = 3
 
-// RENDERER to render the mesh on screen (Canvas)
+// Renderer
 const canvas = document.getElementById('webgl')
-const renderer = new THREE.WebGLRenderer({
-  canvas,
-})
+const renderer = new THREE.WebGL1Renderer({ canvas })
 renderer.setSize(size.width, size.height)
 
 renderer.render(scene, camera)
