@@ -10,6 +10,12 @@ import metalnessClr from '../static/textures/door/metalness.jpg'
 import roughClr from '../static/textures/door/roughness.jpg'
 import matcapClr from '../static/textures/matcaps/1.png'
 import gradientClr from '../static/textures/gradients/3.jpg'
+import * as dat from 'dat.gui'
+
+/**
+ * Debug
+ */
+const gui = new dat.GUI()
 
 /**
  * Base
@@ -31,38 +37,113 @@ const doorMetalnessTexture = textureLoader.load(metalnessClr)
 const doorRoughnessTexture = textureLoader.load(doorClr)
 const matcapTexture = textureLoader.load(matcapClr)
 const gradientTexture = textureLoader.load(gradientClr)
-
+gradientTexture.magFilter = THREE.NearestFilter
+gradientTexture.minFilter = THREE.NearestFilter
+gradientTexture.generateMipmaps = false
 // Scene
 const scene = new THREE.Scene()
 
 /**
- * Objects
+ * 01. BASIC material Objects
  */
-const planeMaterial = new THREE.MeshBasicMaterial({
-  map: gradientTexture,
-})
-const sphereMaterial = new THREE.MeshBasicMaterial({
-  map: matcapTexture,
-})
-const torusMaterial = new THREE.MeshBasicMaterial({
-  map: doorColorTexture,
+
+// const material = new THREE.MeshBasicMaterial({
+//   map: gradientTexture,
+//   opacity: 0.5,
+//   transparent: true,
+//   side: THREE.DoubleSide,
+// })
+
+/**
+ * 02. NORMAL material Objects
+ */
+
+// const material = new THREE.MeshNormalMaterial({
+//   side: THREE.DoubleSide,
+//   transparent: true,
+//   opacity: 0.5,
+//   // wireframe: true,
+//   flatShading: true,
+// })
+
+/**
+ * 03. MAT CAP material Objects
+ */
+
+// const material = new THREE.MeshMatcapMaterial({
+//   side: THREE.DoubleSide,
+//   transparent: true,
+//   opacity: 0.5,
+//   matcap: matcapTexture,
+// })
+
+/**
+ * 04. DEPTH material Objects
+ */
+
+// const material = new THREE.MeshDepthMaterial({
+//   side: THREE.DoubleSide,
+//   matcap: matcapTexture,
+// })
+
+/**
+ * 05. LAMBERT material Objects
+ */
+// const material = new THREE.MeshLambertMaterial({ side: THREE.DoubleSide })
+
+/**
+ * 06. PHONG material Objects
+ */
+// const material = new THREE.MeshPhongMaterial({
+//   side: THREE.DoubleSide,
+//   shininess: 100,
+// })
+
+/**
+ * 06. TOON material Objects
+ */
+// const material = new THREE.MeshToonMaterial({
+//   side: THREE.DoubleSide,
+//   gradientMap: gradientTexture,
+// })
+
+/**
+ * 07. STD. material Objects
+ */
+const material = new THREE.MeshStandardMaterial({
+  side: THREE.DoubleSide,
+  metalness: 0.45,
+  roughness: 0.65,
 })
 
-const sphere = new THREE.Mesh(
-  new THREE.SphereGeometry(0.5, 16, 16),
-  sphereMaterial
-)
+gui.add(material, 'metalness').min(0).max(1).step(0.0001)
+gui.add(material, 'roughness').min(0).max(1).step(0.0001)
 
-const plane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), planeMaterial)
+const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), material)
+
+const plane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), material)
 plane.position.x = 1.2
 
 const torus = new THREE.Mesh(
   new THREE.TorusGeometry(0.3, 0.2, 16, 32),
-  torusMaterial
+  material
 )
 torus.position.x = -1.2
 
 scene.add(sphere, plane, torus)
+
+/**
+ * Light
+ */
+const ambientLight = new THREE.AmbientLight('#fff', 1)
+scene.add(ambientLight)
+
+const pointLight = new THREE.PointLight('#fff', 0.5)
+pointLight.position.x = 1
+pointLight.position.y = 2
+pointLight.position.z = 1.2
+
+scene.add(pointLight)
 
 /**
  * Sizes
